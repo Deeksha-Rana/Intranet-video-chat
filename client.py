@@ -1,6 +1,10 @@
 import numpy as np # numpy: used by cv2 the OpenCV
 import cv2 # cv2: the python binding for OpenCV for fetching video from camera
 import threading
+import pyaudio
+
+exitFlg = False
+
 '''
     This module will be used to send the data recorded by the camera,
     the video, the audio and then finally the multiplexed output.
@@ -19,18 +23,54 @@ class Camera:
     '''
     def __init__(self):
         self.frame = 0
-        streamer = threading.Thread(target = self.showStream)
+        streamer = threading.Thread(target = self.startVideoStream)
         streamer.start()
 
-    def showStream(self):
+    def startVideoStream(self):
+        global exitFlg
         camera = cv2.VideoCapture(0)
         while True:
             ret, self.frame = camera.read()
             cv2.imshow("Stream", self.frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                exitFlg = True
                 break
         cv2.destroyAllWindows()
         camera.release()
 
     def getFrame(self):
         return self.frame
+
+
+
+class Microphone:
+    '''
+        This class will be used to get the sound from the microphone
+        this class too will save the frames, the momentry frames then
+        these frames will be multiplexed with the video frames
+        It also uses a thread
+    '''
+    def __init__(self):
+        self.frame = 0
+        streamer = threading.Thread(target = self.startAudioStream)
+        streamer.start()
+    def startAudioStream(self):
+        global exitFlg
+        CHUNK = 1024
+        RATE = 44100
+        FORMAT = pyaudio.paInt16
+        CHANNELS = 2
+        p = pyaudio.PyAudio()
+        stream = p.open(format = FORMAT,
+                        channels = CHANNELS,
+                        rate = RATE,
+                        input = True,
+                        frames_per_buffer = CHUNK)
+        while exitFlg == False:
+            self.frame = stream.read(CHUNK)
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+    def getFrame(self):
+        return self.frame
+
