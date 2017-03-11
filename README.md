@@ -5,4 +5,5 @@
 
 
 #TODO
-- [ ] Add the support for recording the audio
+- [x] Add the support for recording the audio
+- [ ] Multiplex the audio and video to create the single scenes
