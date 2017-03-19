@@ -1,9 +1,5 @@
-import client
-from time import sleep
+import vidStream
 
-cam = client.Camera()
-mic = client.Microphone()
-print "Hello World"
-sleep(5)
-print cam.getFrame()
+cam = vidStream.Camera()
+mic = vidStream.Microphone()
 
