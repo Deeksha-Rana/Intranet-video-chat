@@ -31,7 +31,7 @@ class Camera:
         camera = cv2.VideoCapture(0)
         while True:
             ret, self.frame = camera.read()
-            cv2.imshow("Stream", self.frame)
+            # cv2.imshow("Stream", self.frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 exitFlg = True
                 break

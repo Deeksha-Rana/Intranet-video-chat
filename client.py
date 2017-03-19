@@ -1,5 +1,6 @@
 import threading
 import socket
+import sys
 
 class Client(threading.Thread):
     def __init__(self, addr):
@@ -13,10 +14,12 @@ class Client(threading.Thread):
         clientSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSock.connect(self.addr)
         counter = 0
-        size = sys.getsizeof((self.getMySoundSample(), self.getMyImageFrame()))
+        SIZES = sys.getsizeof(self.getMySoundSample())
+        SIZEF = sys.getsizeof(self.getMyImageFrame())
         while True:
             if counter % 2 == 0:
-                soundSample, imageFrame = clientSock.recv(size)
+                soundSample = clientSock.recv(SIZES)
+                imageFrame = clientSock.recv(SIZEF)
                 self.setServImageFrame(imageFrame)
                 self.setSetSoundSample(soundSample)
             else:

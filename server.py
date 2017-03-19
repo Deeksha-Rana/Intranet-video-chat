@@ -1,6 +1,7 @@
 import threading
 import socket
 import sys
+import pickle
 
 def getMyIP():
     mySock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -24,15 +25,23 @@ class Server(threading.Thread):
         print 'Your IP is ' + str(IP)
         HOST = 8888
         serverSock.bind((IP, HOST))
+        print 'Address binded, now listening'
         serverSock.listen(1)
+        print 'Lisened'
         clientSock, addr = serverSock.accept()
+        print 'client found'
         counter = 0
-        size = sys.getsizeof((self.getMySoundSample(), self.getMyImageFrame()))
+        SIZES = sys.getsizeof(pickle.dumps(self.getMySoundSample()))
+        SIZEF = sys.getsizeof(pickle.dumps(self.getMyImageFrame()))
         while True:
             if counter % 2 == 0:
-                clientSock.send((self.getMySoundSample(), self.getMyImageFrame()))
+                clientSock.send(pickle.dumps(self.getMySoundSample()))
+                clientSock.send(pickle.dumps(self.getMyImageFrame()))
             else:
-                soundSample, imageFrame = clientSock.recv(size)
+                soundSample = clientSock.recv(SIZES)
+                soundSample = pickle.loads(soundSample)
+                imageFrame = clientSock.recv(SIZEF)
+                imageFrame = pickle.loads(imageFrame)
                 self.setClientImageFrame(imageFrame)
                 self.setClientSoundSample(soundSample)
             counter += 1
