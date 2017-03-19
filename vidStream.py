@@ -40,7 +40,8 @@ class Camera:
 
     def getFrame(self):
         return self.frame
-
+    def showFrame(self, frame):
+        cv2.imshow("Stream", frame)
 
 
 class Microphone:
@@ -53,6 +54,7 @@ class Microphone:
     def __init__(self):
         self.frame = 0
         streamer = threading.Thread(target = self.startAudioStream)
+        self.stream = 0
         streamer.start()
     def startAudioStream(self):
         global exitFlg
@@ -61,16 +63,20 @@ class Microphone:
         FORMAT = pyaudio.paInt16
         CHANNELS = 2
         p = pyaudio.PyAudio()
-        stream = p.open(format = FORMAT,
+        self.stream = p.open(format = FORMAT,
                         channels = CHANNELS,
                         rate = RATE,
                         input = True,
+                        output = True,
                         frames_per_buffer = CHUNK)
         while exitFlg == False:
-            self.frame = stream.read(CHUNK)
-        stream.stop_stream()
-        stream.close()
+            self.frame = self.stream.read(CHUNK)
+        self.stream.stop_stream()
+        self.stream.close()
         p.terminate()
     def getFrame(self):
         return self.frame
+
+    def playSoundSample(self, sample):
+        self.stream.write(sample, 1024)
 
