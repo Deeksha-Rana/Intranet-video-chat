@@ -35,6 +35,7 @@ class Server(threading.Thread):
         SIZES = sys.getsizeof(pickle.dumps(self.getMySoundSample()))
         SIZEF = sys.getsizeof(pickle.dumps(self.getMyImageFrame()))
         while True:
+            print 'hello'
             clientSock.send(pickle.dumps(self.getMySoundSample()))
             clientSock.send(pickle.dumps(self.getMyImageFrame()))
             soundSample = clientSock.recv(SIZES)

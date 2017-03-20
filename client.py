@@ -1,6 +1,7 @@
 import threading
 import socket
 import sys
+import pickle
 
 class Client(threading.Thread):
     def __init__(self, addr):
@@ -14,16 +15,18 @@ class Client(threading.Thread):
         clientSock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         clientSock.connect(self.addr)
         counter = 0
-        SIZES = sys.getsizeof(self.getMySoundSample())
-        SIZEF = sys.getsizeof(self.getMyImageFrame())
+        SIZES = sys.getsizeof(pickle.dumps(self.getMySoundSample()))
+        SIZEF = sys.getsizeof(pickle.dumps(self.getMyImageFrame()))
         while True:
-            if counter % 2 == 0:
-                soundSample = clientSock.recv(SIZES)
-                imageFrame = clientSock.recv(SIZEF)
-                self.setServImageFrame(imageFrame)
-                self.setSetSoundSample(soundSample)
-            else:
-                clientSock.send((self.getMySoundSample(), self.getMyImageFrame()))
+            soundSample = clientSock.recv(SIZES)
+            soundSample = pickle.loads(soundSample)
+            imageFrame = clientSock.recv(SIZEF)
+            imageFrame = pickle.loads(imageFrame)
+            self.setServImageFrame(imageFrame)
+            self.setSetSoundSample(soundSample)
+            clientSock.send(pickle.dumps(self.getMySoundSample()))
+            clientSock.send(pickle.dumps(self.getMyImageFrame()))
+            counter += 1
             self.started = True
 
     def setMySoundSample(self, sample):
