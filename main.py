@@ -16,11 +16,11 @@ if status == 0:
         serv.setMyImageFrame(cam.getFrame())
         imageFrame = serv.getClientImageFrame()
         soundSample = serv.getClientSoundSample()
-        # try:
-            # cam.showFrame(imageFrame)
-            # mic.playSoundSample(soundSample)
-        # except:
-            # continue
+        try:
+            cam.showFrame(imageFrame)
+            mic.playSoundSample(soundSample)
+        except:
+            continue
 
 if status == 1:
     ip = raw_input("Enter the IP address you want to connect")
@@ -36,8 +36,8 @@ if status == 1:
         cli.setMyImageFrame(cam.getFrame())
         imageFrame = cli.getServImageFrame()
         soundSample = cli.getServSoundSample()
-        # try:
-            # cam.showFrame(imageFrame)
-            # mic.playSoundSample(soundSample)
-        # except:
-            # continue
+        try:
+            cam.showFrame(imageFrame)
+            mic.playSoundSample(soundSample)
+        except:
+            continue

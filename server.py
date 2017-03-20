@@ -30,20 +30,19 @@ class Server(threading.Thread):
         print 'Lisened'
         clientSock, addr = serverSock.accept()
         print 'client found'
+        print addr
         counter = 0
         SIZES = sys.getsizeof(pickle.dumps(self.getMySoundSample()))
         SIZEF = sys.getsizeof(pickle.dumps(self.getMyImageFrame()))
         while True:
-            if counter % 2 == 0:
-                clientSock.send(pickle.dumps(self.getMySoundSample()))
-                clientSock.send(pickle.dumps(self.getMyImageFrame()))
-            else:
-                soundSample = clientSock.recv(SIZES)
-                soundSample = pickle.loads(soundSample)
-                imageFrame = clientSock.recv(SIZEF)
-                imageFrame = pickle.loads(imageFrame)
-                self.setClientImageFrame(imageFrame)
-                self.setClientSoundSample(soundSample)
+            clientSock.send(pickle.dumps(self.getMySoundSample()))
+            clientSock.send(pickle.dumps(self.getMyImageFrame()))
+            soundSample = clientSock.recv(SIZES)
+            soundSample = pickle.loads(soundSample)
+            imageFrame = clientSock.recv(SIZEF)
+            imageFrame = pickle.loads(imageFrame)
+            self.setClientImageFrame(imageFrame)
+            self.setClientSoundSample(soundSample)
             counter += 1
             self.started = True
 
